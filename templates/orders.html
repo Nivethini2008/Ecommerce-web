@@ -1,0 +1,42 @@
+{% extends "base.html" %}
+{% block title %}My Orders - ShopEasy{% endblock %}
+
+{% block content %}
+<h1>My Orders</h1>
+
+{% if orders %}
+<div class="table-wrap">
+<table>
+    <thead>
+        <tr>
+            <th>Order</th>
+            <th>Date</th>
+            <th>Items</th>
+            <th>Total</th>
+            <th>Status</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for order in orders %}
+        <tr>
+            <td>#{{ order.id }}</td>
+            <td>{{ order.created_at.strftime("%d %b %Y, %I:%M %p") }}</td>
+            <td>
+                {% for item in order.items %}
+                    {{ item.product.name }} × {{ item.quantity }}{% if not loop.last %}, {% endif %}
+                {% endfor %}
+            </td>
+            <td>₹{{ "%.2f"|format(order.total_amount) }}</td>
+            <td><span class="status {{ order.status|lower }}">{{ order.status }}</span></td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+</div>
+{% else %}
+<div class="empty">
+    <h2>No orders yet</h2>
+    <a class="btn" href="{{ url_for('index') }}">Start Shopping</a>
+</div>
+{% endif %}
+{% endblock %}

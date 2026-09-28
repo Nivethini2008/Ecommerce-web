@@ -1,0 +1,67 @@
+{% extends "base.html" %}
+{% block title %}Products - ShopEasy{% endblock %}
+
+{% block content %}
+<section class="hero">
+    <div>
+        <p class="eyebrow">ONLINE STORE</p>
+        <h1>Find products you love.</h1>
+        <p>Browse products, add them to your cart and track your orders.</p>
+    </div>
+</section>
+
+<form class="filters" method="GET">
+    <input type="text" name="search" value="{{ search }}" placeholder="Search products...">
+
+    <select name="category">
+        <option value="">All categories</option>
+        {% for category in categories %}
+            <option value="{{ category }}" {% if selected_category == category %}selected{% endif %}>
+                {{ category }}
+            </option>
+        {% endfor %}
+    </select>
+
+    <button class="btn" type="submit">Search</button>
+</form>
+
+<div class="product-grid">
+    {% for product in products %}
+    <article class="product-card">
+        <div class="product-image">
+            {% if product.image_url %}
+                <img src="{{ product.image_url }}" alt="{{ product.name }}">
+            {% else %}
+                <div class="placeholder">No Image</div>
+            {% endif %}
+        </div>
+
+        <div class="product-info">
+            <span class="category">{{ product.category }}</span>
+            <h3>{{ product.name }}</h3>
+            <p>{{ product.description }}</p>
+
+            <div class="product-bottom">
+                <strong>₹{{ "%.2f"|format(product.price) }}</strong>
+                {% if product.stock > 0 %}
+                    <span class="stock">{{ product.stock }} left</span>
+                {% else %}
+                    <span class="out">Out of stock</span>
+                {% endif %}
+            </div>
+
+            <form method="POST" action="{{ url_for('add_to_cart', product_id=product.id) }}">
+                <button class="btn full" {% if product.stock == 0 %}disabled{% endif %}>
+                    Add to Cart
+                </button>
+            </form>
+        </div>
+    </article>
+    {% else %}
+        <div class="empty">
+            <h2>No products found</h2>
+            <p>Try a different search or category.</p>
+        </div>
+    {% endfor %}
+</div>
+{% endblock %}

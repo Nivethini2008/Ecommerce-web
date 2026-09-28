@@ -1,0 +1,42 @@
+{% extends "base.html" %}
+{% block title %}{% if product %}Edit{% else %}Add{% endif %} Product - ShopEasy{% endblock %}
+
+{% block content %}
+<div class="form-page">
+    <form class="form-card wide" method="POST">
+        <h1>{% if product %}Edit Product{% else %}Add Product{% endif %}</h1>
+
+        <label>Product Name</label>
+        <input type="text" name="name" required value="{{ product.name if product else '' }}">
+
+        <label>Description</label>
+        <textarea name="description" rows="5" required>{{ product.description if product else '' }}</textarea>
+
+        <div class="two-col">
+            <div>
+                <label>Price (₹)</label>
+                <input type="number" name="price" step="0.01" min="0" required
+                       value="{{ product.price if product else '' }}">
+            </div>
+            <div>
+                <label>Stock</label>
+                <input type="number" name="stock" min="0" required
+                       value="{{ product.stock if product else '' }}">
+            </div>
+        </div>
+
+        <label>Category</label>
+        <input type="text" name="category" required
+               value="{{ product.category if product else 'General' }}">
+
+        <label>Image URL</label>
+        <input type="url" name="image_url"
+               value="{{ product.image_url if product else '' }}"
+               placeholder="https://...">
+
+        <button class="btn full" type="submit">
+            {% if product %}Update Product{% else %}Add Product{% endif %}
+        </button>
+    </form>
+</div>
+{% endblock %}

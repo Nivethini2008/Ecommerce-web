@@ -1,0 +1,90 @@
+{% extends "base.html" %}
+{% block title %}Admin Dashboard - ShopEasy{% endblock %}
+
+{% block content %}
+<div class="page-heading">
+    <div>
+        <p class="eyebrow">ADMIN PANEL</p>
+        <h1>Dashboard</h1>
+    </div>
+    <a class="btn" href="{{ url_for('add_product') }}">+ Add Product</a>
+</div>
+
+<div class="stats">
+    <div class="stat-card"><strong>{{ products|length }}</strong><span>Products</span></div>
+    <div class="stat-card"><strong>{{ orders|length }}</strong><span>Orders</span></div>
+    <div class="stat-card"><strong>{{ users|length }}</strong><span>Users</span></div>
+</div>
+
+<h2>Product Management</h2>
+<div class="table-wrap">
+<table>
+    <thead>
+        <tr>
+            <th>ID</th>
+            <th>Product</th>
+            <th>Category</th>
+            <th>Price</th>
+            <th>Stock</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+    {% for product in products %}
+        <tr>
+            <td>{{ product.id }}</td>
+            <td>{{ product.name }}</td>
+            <td>{{ product.category }}</td>
+            <td>₹{{ "%.2f"|format(product.price) }}</td>
+            <td>{{ product.stock }}</td>
+            <td class="actions">
+                <a class="btn small" href="{{ url_for('edit_product', product_id=product.id) }}">Edit</a>
+                <form method="POST" action="{{ url_for('delete_product', product_id=product.id) }}">
+                    <button class="btn small danger" type="submit"
+                            onclick="return confirm('Delete this product?')">Delete</button>
+                </form>
+            </td>
+        </tr>
+    {% endfor %}
+    </tbody>
+</table>
+</div>
+
+<h2>Order Management</h2>
+<div class="table-wrap">
+<table>
+    <thead>
+        <tr>
+            <th>Order</th>
+            <th>Customer</th>
+            <th>Total</th>
+            <th>Date</th>
+            <th>Status</th>
+            <th>Update</th>
+        </tr>
+    </thead>
+    <tbody>
+    {% for order in orders %}
+        <tr>
+            <td>#{{ order.id }}</td>
+            <td>{{ order.user.name }}<br><small>{{ order.user.email }}</small></td>
+            <td>₹{{ "%.2f"|format(order.total_amount) }}</td>
+            <td>{{ order.created_at.strftime("%d %b %Y") }}</td>
+            <td><span class="status {{ order.status|lower }}">{{ order.status }}</span></td>
+            <td>
+                <form class="inline-form" method="POST"
+                      action="{{ url_for('update_order_status', order_id=order.id) }}">
+                    <select name="status">
+                        {% for s in ["Pending", "Processing", "Shipped", "Delivered", "Cancelled"] %}
+                            <option value="{{ s }}" {% if order.status == s %}selected{% endif %}>{{ s }}</option>
+                        {% endfor %}
+                    </select>
+                    <button class="btn small" type="submit">Save</button>
+                </form>
+            </td>
+        </tr>
+    {% endfor %}
+    </tbody>
+</table>
+</div>
+{% endblock %}

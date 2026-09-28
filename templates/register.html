@@ -1,0 +1,26 @@
+{% extends "base.html" %}
+{% block title %}Register - ShopEasy{% endblock %}
+
+{% block content %}
+<div class="form-page">
+    <form class="form-card" method="POST">
+        <h1>Create Account</h1>
+        <p class="muted">Register as a customer.</p>
+
+        <label>Name</label>
+        <input type="text" name="name" required>
+
+        <label>Email</label>
+        <input type="email" name="email" required>
+
+        <label>Password</label>
+        <input type="password" name="password" minlength="6" required>
+
+        <button class="btn full" type="submit">Create Account</button>
+
+        <p class="center">Already registered?
+            <a href="{{ url_for('login') }}">Login</a>
+        </p>
+    </form>
+</div>
+{% endblock %}
